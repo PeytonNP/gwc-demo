@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="">
+	<meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+	<meta name="generator" content="Jekyll v4.0.1">
+	<title>Starter Template · Bootstrap</title>
+
+	<link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/starter-template/">
+
+	<!-- Bootstrap core CSS -->
+	<link href="../assets/dist/css/bootstrap.css" rel="stylesheet">
+
+	<!-- Custom styles for this template -->
+	<link href="starter-template.css" rel="stylesheet">
+
+	<!-- The core Firebase JS SDK is always required and must be listed first -->
+	<script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-app.js"></script>
+
+	<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+	<script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-analytics.js"></script>
+
+	<script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-database.js"></script>
+
+	<script>
+		// Your web app's Firebase configuration
+		var firebaseConfig = {
+			apiKey: "AIzaSyB7CtyQrrM1tW-YPYZY4RoMe_Luz4D2xpM",
+			authDomain: "gwc-demo-9edb3.firebaseapp.com",
+			databaseURL: "https://gwc-demo-9edb3.firebaseio.com",
+			projectId: "gwc-demo-9edb3",
+			storageBucket: "gwc-demo-9edb3.appspot.com",
+			messagingSenderId: "218932112038",
+			appId: "1:218932112038:web:a33b97f84434e775606267",
+			measurementId: "G-MVMCXGFXWY"
+		};
+
+		// Initialize Firebase
+		firebase.initializeApp(firebaseConfig);
+		firebase.analytics();
+
+		// Get a reference to the database service
+		var database = firebase.database().ref('/');
+		var usersDB = firebase.database().ref('/users/');
+		var commentsDB = firebase.database().ref('/comments/');
+
+		function submitUserInfo() {
+			event.preventDefault();
+			console.log("The user submitted their information!");
+
+			var firstName = document.getElementById("firstName").value;
+			var lastName = document.getElementById("lastName").value;
+			var favoriteActivity = document.getElementById("inputActivity").value;
+			var favoriteClass = $("#inputSubject").val();
+			var codedBefore = $("#codedBefore").val();
+			var howInterested = $("input[name='customRadio']:checked").val();
+
+			console.log("First Name: ", firstName, "\tLast Name: ", lastName);
+			console.log("Favorite Activity: ", favoriteActivity, "\tFavorite Class: ", favoriteClass);
+			console.log("Coded Before: ", codedBefore, "\tInterest Level: ", howInterested);
+
+			usersDB.once('value', (snap) => {
+				var numUsers = snap.numChildren();
+				var userId = numUsers + 1;
+				console.log("Number Of Users : ", numUsers, "\t UserId: ", userId);
+
+				firebase.database().ref('/users/' + userId).set({
+					first_name: firstName,
+					last_name: lastName,
+					favorite_activity: favoriteActivity,
+					favorite_class: favoriteClass,
+					has_experience: codedBefore,
+					interest_level: howInterested
+				});
+			});
+
+			$("#submitModal").modal();
+		}
+
+		function postComment() {
+			event.preventDefault();
+			console.log("The user posted a comment!");
+			var userId = $("#username").val();
+			var comment = document.getElementById("postText").value;
+
+			console.log("UserId: ", userId);
+			console.log("Comment: ", comment);
+
+			commentsDB.once('value', (snap) => {
+				var numComments = snap.numChildren();
+				var commentId = numComments + 1;
+				console.log("Number Of Comments : ", numComments, "\t CommentId: ", commentId);
+
+				firebase.database().ref('/comments/' + commentId).set({
+					user_id: userId,
+					message: comment
+				});
+			});
+
+			$("#commentModal").modal();
+		}
+
+	</script>
+
+</head>
+
+<body>
+	<nav class="navbar navbar-expand-md navbar-dark bg-primary fixed-top">
+		<a class="navbar-brand" href="/">GWC Demo</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbarsExampleDefault">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="users.html">Users</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="front.html">Front-End</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="back.html">Back-End</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="database.html">Database</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="other.html">Other</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+
+	<main role="main" class="container">
+
+		<div class="starter-template">
+			<h1>Welcome!</h1>
+			<p class="lead">Please answer the questions below so we can get to know you!</p>
+		</div>
+
+		<form class="needs-validation">
+			<div class="form-row">
+				<div class="col-md-6 mb-3">
+					<label for="validationCustom01">First name</label>
+					<input type="text" class="form-control" id="firstName" value="" required>
+					<div class="valid-feedback">
+						Looks good!
+					</div>
+				</div>
+				<div class="col-md-6 mb-3">
+					<label for="validationCustom02">Last name</label>
+					<input type="text" class="form-control" id="lastName" value="" required>
+					<div class="valid-feedback">
+						Looks good!
+					</div>
+				</div>
+			</div>
+
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label for="inputActivity">Favorite Activity</label>
+					<input type="text" class="form-control" id="inputActivity" value="" required>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="inputSubject">Favorite Subject / Class</label>
+					<select id="inputSubject" class="form-control" required>
+						<option value="None" selected>Select your favorite class</option>
+						<option value="None">I don't have one</option>
+						<option value="All">All of them</option>
+						<option value="Art">Art</option>
+						<option value="Business">Business</option>
+						<option value="Computer Science">Computer Science</option>
+						<option value="English">English / Language Arts</option>
+						<option value="Foreign Language">Foreign Language</option>
+						<option value="Gym">Gym / PE</option>
+						<option value="History">History & Social Studies</option>
+						<option value="Math">Math</option>
+						<option value="Music">Music</option>
+						<option value="Science">Science</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="form-row">
+				<div class="form-group">
+					<select class="custom-select" id="codedBefore" required>
+						<option value="None" name="codeOptions" selected>Have you written code or made any programs before?</option>
+						<option value="Yes" name="codeOptions">Yes</option>
+						<option value="No" name="codeOptions">No</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="form-row">
+				<div class="form-group" required>
+					<strong>How interested are you in technology, coding, and computer science?</strong>
+					<div class="custom-control custom-radio">
+						<input type="radio" id="notInterested" name="customRadio" class="custom-control-input" value="Not Interested" required>
+						<label class="custom-control-label" for="notInterested">Not Interested</label>
+					</div>
+					<div class="custom-control custom-radio">
+						<input type="radio" id="somewhatInterested" name="customRadio" class="custom-control-input" value="Somewhat Interested">
+						<label class="custom-control-label" for="somewhatInterested">Somewhat interested</label>
+					</div>
+					<div class="custom-control custom-radio">
+						<input type="radio" id="veryInterested" name="customRadio" class="custom-control-input" value="Very Interested">
+						<label class="custom-control-label" for="veryInterested">Very Interested</label>
+					</div>
+				</div>
+			</div>
+
+			<button class="btn btn-primary" type="submit" onclick="submitUserInfo()">Submit</button>
+		</form>
+
+		<br>
+
+		<!-- Modal -->
+		<div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Success</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						Your data was submitted! Post comments below!
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<hr>
+
+		<div class="starter-template">
+			<h1>Create a new Post!</h1>
+			<p class="lead">Post a comment below!</p>
+		</div>
+
+		<form>
+			<div class="form-row">
+				<div class="input-group mb-2 mr-sm-2 col-5">
+					<div class="input-group-prepend">
+						<div class="input-group-text">@</div>
+					</div>
+					<select class="custom-select" id="username" required>
+						<option value="None" name="usernameOption" selected>Find your name</option>
+					</select>
+					<script>
+						usersDB.on('value', (snapshot) => {
+							//console.log("snapshot: ", snapshot);
+							// Reset options to prevent duplicate users as more are added
+							var dropdownOptions = "<option value=\"" + 0 + "\" selected> Find your name </option>";
+
+							snapshot.forEach(function(childSnapshot) {
+								var childKey = childSnapshot.key;
+								var childData = childSnapshot.val();
+								var firstName = childData.first_name;
+								var lastName = childData.last_name;
+								console.log("childKey ", childKey, "\t", "childData ", childData);
+								console.log("First Name: ", firstName, " Last Name: ", lastName);
+
+								var currentOption = "<option value=\"" + childKey + "\">" + childKey + ". " + firstName + " " + lastName + "</option>";
+								dropdownOptions += currentOption;
+								document.getElementById("username").innerHTML = dropdownOptions;
+							});
+						});
+
+					</script>
+				</div>
+				<div class="col">
+					<input type="text" class="form-control" id="postText" placeholder="Enter your comment here">
+				</div>
+			</div>
+			<br>
+			<button class="btn btn-primary" type="submit" onclick="postComment()">Post Comment</button>
+
+		</form>
+
+		<!-- Modal -->
+		<div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Success</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						Your comment has been posted!
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<br><br><br><br><br>
+
+	</main>
+
+	<script src="../assets/dist/js/custom.js"></script>
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+	<script>
+		window.jQuery || document.write('<script src="../assets/js/vendor/jquery.slim.min.js"><\/script>')
+
+	</script>
+	<script src="../assets/dist/js/bootstrap.bundle.js"></script>
+
+</body>
+
+</html>
