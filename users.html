@@ -7,7 +7,7 @@
 	<meta name="description" content="">
 	<meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
 	<meta name="generator" content="Jekyll v4.0.1">
-	<title>Starter Template · Bootstrap</title>
+	<title>Welcome!</title>
 
 	<link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/starter-template/">
 
@@ -17,11 +17,45 @@
 	<!-- Custom styles for this template -->
 	<link href="starter-template.css" rel="stylesheet">
 
+	<!-- The core Firebase JS SDK is always required and must be listed first -->
+	<script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-app.js"></script>
+
+	<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+	<script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-analytics.js"></script>
+
+	<script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-database.js"></script>
+
+	<script>
+		// Your web app's Firebase configuration
+		var firebaseConfig = {
+			apiKey: "AIzaSyB7CtyQrrM1tW-YPYZY4RoMe_Luz4D2xpM",
+			authDomain: "gwc-demo-9edb3.firebaseapp.com",
+			databaseURL: "https://gwc-demo-9edb3.firebaseio.com",
+			projectId: "gwc-demo-9edb3",
+			storageBucket: "gwc-demo-9edb3.appspot.com",
+			messagingSenderId: "218932112038",
+			appId: "1:218932112038:web:a33b97f84434e775606267",
+			measurementId: "G-MVMCXGFXWY"
+		};
+
+		// Initialize Firebase
+		firebase.initializeApp(firebaseConfig);
+		firebase.analytics();
+
+		// Get a reference to the database service
+		var database = firebase.database().ref('/');
+		var usersDB = firebase.database().ref('/users/');
+		var commentsDB = firebase.database().ref('/comments/');
+		var colors = ["#007bff", "#6610f2", "#6f42c1", "#e83e8c", "#dc3545", "#fd7e14", "#ffc107", "#28a745", "#20c997", "17a2b8"];
+
+	</script>
+
 </head>
 
 <body>
 	<nav class="navbar navbar-expand-md navbar-dark bg-primary fixed-top">
-		<a class="navbar-brand" href="/">GWC Demo</a>
+		<a class="navbar-brand" href="index.html">GWC Demo</a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
@@ -49,7 +83,107 @@
 
 
 	<main role="main" class="container">
+		<div class="starter-template">
+			<h1>Participants</h1>
+		</div>
 
+		<div class="table-responsive-sm">
+			<table class="table">
+				<thead>
+					<tr>
+						<th scope="col">#</th>
+						<th scope="col">First Name</th>
+						<th scope="col">Last Name</th>
+						<th scope="col">Favorite Activity</th>
+						<th scope="col">Favorite Subject</th>
+						<th scope="col">Has Experience</th>
+						<th scope="col">Interest Level</th>
+					</tr>
+				</thead>
+				<tbody id="userTable">
+
+				</tbody>
+				<script>
+					usersDB.on('value', (snapshot) => {
+						snapshot.forEach(function(childSnapshot) {
+							var childKey = childSnapshot.key;
+							var childData = childSnapshot.val();
+							var userId = childKey;
+							var firstName = childData.first_name;
+							var lastName = childData.last_name;
+							var favActivity = childData.favorite_activity;
+							var favClass = childData.favorite_class;
+							var interestLevel = childData.interest_level;
+							var experience = childData.has_experience;
+
+							console.log("First Name: ", firstName, "\tLast Name: ", lastName);
+							console.log("Favorite Activity: ", favActivity, "\tFavorite Class: ", favClass);
+							console.log("Coded Before: ", experience, "\tInterest Level: ", interestLevel);
+
+							var elm = '<th scope="row">' + userId + '</th>' +
+								'<td>' + firstName + '</td>' +
+								'<td>' + lastName + '</td>' +
+								'<td>' + favActivity + '</td>' +
+								'<td>' + favClass + '</td>' +
+								'<td>' + experience + '</td>' +
+								'<td>' + interestLevel + '</td>';
+
+							var divElement = document.createElement('tr');
+							divElement.innerHTML = elm;
+							console.log("Row Element: ", divElement);
+							document.getElementById("userTable").appendChild(divElement);
+
+						});
+					});
+
+				</script>
+			</table>
+		</div>
+
+		<br><br>
+		<hr>
+		<br>
+		<div class="starter-template">
+			<h1>Comments</h1>
+		</div>
+
+		<div class="my-3 p-3 bg-white rounded shadow-sm" id="commentsDiv">
+			<h6 class="border-bottom border-gray pb-2 mb-0">Comments</h6>
+			<script>
+				commentsDB.on('value', (snapshot) => {
+					snapshot.forEach(function(childSnapshot) {
+						var childKey = childSnapshot.key;
+						var childData = childSnapshot.val();
+						var userId = childData.user_id;
+						var userMessage = childData.message;
+						var userName = childData.user_name;
+						console.log("CommentId: ", childKey, "\t", "UserId: ", userId, "\tUsername: ", userName, "\tMessage: ", userMessage);
+
+						var i = Math.floor(Math.random() * 10);
+						var currentColor = colors[i];
+
+						var elm = '<div class="media text-muted pt-3" id="commentsDiv">' +
+							'<svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32">' +
+							'<title>Placeholder</title>' +
+							'<rect width="100%" height="100%" fill="' + currentColor + '" /><text x="50%" y="50%" fill="' + currentColor + '" dy=".3em">32x32</text>' +
+							'</svg>' +
+							'<p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">' +
+							'<strong class="d-block text-gray-dark">@' + userName + '</strong>' +
+							userMessage +
+							'</p>' +
+							'</div>';
+
+						var divElement = document.createElement('div');
+						divElement.innerHTML = elm;
+						console.log("Element: ", divElement);
+						document.getElementById("commentsDiv").appendChild(divElement);
+
+					});
+				});
+
+			</script>
+
+		</div>
 	</main>
 
 

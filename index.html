@@ -7,7 +7,7 @@
 	<meta name="description" content="">
 	<meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
 	<meta name="generator" content="Jekyll v4.0.1">
-	<title>Starter Template · Bootstrap</title>
+	<title>Welcome!</title>
 
 	<link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/starter-template/">
 
@@ -84,10 +84,14 @@
 		function postComment() {
 			event.preventDefault();
 			console.log("The user posted a comment!");
-			var userId = $("#username").val();
+			var user = $("#username").val();
+			var userArr = user.split("-");
+			var userId = userArr[0];
+			var userName = userArr[1];
 			var comment = document.getElementById("postText").value;
 
 			console.log("UserId: ", userId);
+			console.log("Username: ", userName);
 			console.log("Comment: ", comment);
 
 			commentsDB.once('value', (snap) => {
@@ -97,6 +101,7 @@
 
 				firebase.database().ref('/comments/' + commentId).set({
 					user_id: userId,
+					user_name: userName,
 					message: comment
 				});
 			});
@@ -110,7 +115,7 @@
 
 <body>
 	<nav class="navbar navbar-expand-md navbar-dark bg-primary fixed-top">
-		<a class="navbar-brand" href="/">GWC Demo</a>
+		<a class="navbar-brand" href="index.html">GWC Demo</a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
@@ -259,7 +264,7 @@
 						usersDB.on('value', (snapshot) => {
 							//console.log("snapshot: ", snapshot);
 							// Reset options to prevent duplicate users as more are added
-							var dropdownOptions = "<option value=\"" + 0 + "\" selected> Find your name </option>";
+							var dropdownOptions = "<option value=\"" + 0 + "-" + "First Name & Last Name" + "\" selected> Find your name </option>";
 
 							snapshot.forEach(function(childSnapshot) {
 								var childKey = childSnapshot.key;
@@ -269,7 +274,7 @@
 								console.log("childKey ", childKey, "\t", "childData ", childData);
 								console.log("First Name: ", firstName, " Last Name: ", lastName);
 
-								var currentOption = "<option value=\"" + childKey + "\">" + childKey + ". " + firstName + " " + lastName + "</option>";
+								var currentOption = "<option value=\"" + childKey + "-" + firstName + " " + lastName + "\">" + childKey + ". " + firstName + " " + lastName + "</option>";
 								dropdownOptions += currentOption;
 								document.getElementById("username").innerHTML = dropdownOptions;
 							});
