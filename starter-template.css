@@ -1,7 +1,23 @@
 body {
-  padding-top: 5rem;
+	padding-top: 5rem;
 }
+
 .starter-template {
-  padding: 3rem 1.5rem;
-  text-align: center;
+	padding: 3rem 1.5rem;
+	text-align: center;
+}
+
+.card {
+	margin: 0 auto;
+	float: none;
+	margin-bottom: 10px;
+	height: 300px;
+}
+
+.carousel-control-prev-icon {
+	background-image: url(assets/bootstrap-icons/arrow-left-square-fill.svg) !important;
+}
+
+.carousel-control-next-icon {
+	background-image: url(assets/bootstrap-icons/arrow-right-square-fill.svg) !important;
 }
